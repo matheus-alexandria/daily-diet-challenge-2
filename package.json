@@ -1,15 +1,22 @@
 {
+  "name": "daily-diet-challenge-2",
+  "description": "The second challenge for the Ignite Backend NodeJS. In this project I will create an API to supply the needed data for the following app: <a href='https://www.figma.com/community/file/1218573349379609244'>Figma Daily Diet</a>",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "scripts": {
     "dev": "tsx watch src/server.ts"
-  },
-  "devDependencies": {
-    "@types/node": "^20.4.2",
-    "tsx": "^3.12.7",
-    "typescript": "^5.1.6"
   },
   "dependencies": {
     "dotenv": "16.3.1",
     "fastify": "4.19.2",
     "zod": "3.21.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.6"
   }
 }
