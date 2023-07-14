@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  api-daily-diet:
+    image: bitnami/postgresql
+    ports:
+      - '5439:5432'
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DATABASE=dailydietapi
+    
