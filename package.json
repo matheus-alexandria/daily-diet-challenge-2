@@ -10,12 +10,14 @@
     "dev": "tsx watch src/server.ts"
   },
   "dependencies": {
+    "@prisma/client": "5.0.0",
     "dotenv": "16.3.1",
     "fastify": "4.19.2",
     "zod": "3.21.4"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
+    "prisma": "5.0.0",
     "tsx": "^3.12.7",
     "typescript": "^5.1.6"
   }
