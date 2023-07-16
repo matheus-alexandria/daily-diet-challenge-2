@@ -25,4 +25,42 @@ export async function appRoutes(app: FastifyInstance) {
     
     return reply.status(201).send();
   });
+
+  app.post('/meal/:id', async (request, reply) => {
+    const requestParamsSchema = z.object({
+      id: z.string().uuid()
+    });
+
+    const requestBodySchema = z.object({
+      name: z.string(),
+      description: z.string().optional(),
+      onDiet: z.boolean(),
+    });
+
+    const { id } = requestParamsSchema.parse(request.params);
+
+    const { name, description, onDiet } = requestBodySchema.parse(request.body);
+
+    const user = prisma.user.findFirst({
+      where: {
+        id,
+      }
+    });
+
+    if (!user) {
+      throw new Error('User does not exist');
+    }
+
+    await prisma.meal.create({
+      data: {
+        name,
+        description,
+        on_diet: onDiet,
+        schedule: new Date(),
+        user_id: id
+      }
+    });
+
+    return reply.status(201).send();
+  });
 }

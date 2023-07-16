@@ -22,7 +22,7 @@ model Meal {
   id          String   @id @default(uuid())
   name        String
   description String?
-  schedule    DateTime
+  schedule    DateTime @default(now())
   on_diet     Boolean
 
   user    User   @relation(fields: [user_id], references: [id])
