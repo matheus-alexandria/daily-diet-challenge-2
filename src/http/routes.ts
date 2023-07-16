@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { randomUUID } from "crypto";
+import { checkSessionId } from "../middlewares/checkSessionId";
 
 export async function appRoutes(app: FastifyInstance) {
   app.post('/user', async (request, reply) => {
@@ -26,7 +27,9 @@ export async function appRoutes(app: FastifyInstance) {
     return reply.status(201).send();
   });
 
-  app.post('/meal/:id', async (request, reply) => {
+  app.post('/meal/:id', {
+    preHandler: [checkSessionId],
+  }, async (request, reply) => {
     const requestParamsSchema = z.object({
       id: z.string().uuid()
     });
