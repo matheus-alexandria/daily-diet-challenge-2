@@ -8,9 +8,10 @@ export async function appRoutes(app: FastifyInstance) {
   app.post('/user', async (request, reply) => {
     const requestBodySchema = z.object({
       name: z.string(),
+      email: z.string().email(),
     });
 
-    const { name } = requestBodySchema.parse(request.body);
+    const { name, email } = requestBodySchema.parse(request.body);
 
     const cookie = randomUUID();
     reply.cookie('sessionId', cookie, {
@@ -20,7 +21,8 @@ export async function appRoutes(app: FastifyInstance) {
 
     await prisma.user.create({
       data: {
-        name
+        name,
+        email
       }
     });
     
