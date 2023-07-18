@@ -1,35 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { prisma } from "../lib/prisma";
-import { randomUUID } from "crypto";
-import { checkSessionId } from "../middlewares/checkSessionId";
+import { prisma } from "../../lib/prisma";
+import { checkSessionId } from "../../middlewares/checkSessionId";
 
-export async function appRoutes(app: FastifyInstance) {
-  app.post('/user', async (request, reply) => {
-    const requestBodySchema = z.object({
-      name: z.string(),
-      email: z.string().email(),
-    });
-
-    const { name, email } = requestBodySchema.parse(request.body);
-
-    const cookie = randomUUID();
-    reply.cookie('sessionId', cookie, {
-      path: '/',
-      maxAge: 1000 * 60 * 60 * 24 * 7 // A week (7 days)
-    });
-
-    await prisma.user.create({
-      data: {
-        name,
-        email
-      }
-    });
-    
-    return reply.status(201).send();
-  });
-
-  app.post('/meal/:id', {
+export async function mealRoutes(app: FastifyInstance) {
+  app.post(':id', {
     preHandler: [checkSessionId],
   }, async (request, reply) => {
     const requestParamsSchema = z.object({
