@@ -4,7 +4,7 @@ import { prisma } from "../../lib/prisma";
 import { checkSessionId } from "../../middlewares/checkSessionId";
 
 export async function mealRoutes(app: FastifyInstance) {
-  app.post(':id', {
+  app.post('/:id', {
     preHandler: [checkSessionId],
   }, async (request, reply) => {
     const requestParamsSchema = z.object({
@@ -31,7 +31,7 @@ export async function mealRoutes(app: FastifyInstance) {
       throw new Error('User does not exist');
     }
 
-    await prisma.meal.create({
+    const meal = await prisma.meal.create({
       data: {
         name,
         description,
@@ -41,6 +41,8 @@ export async function mealRoutes(app: FastifyInstance) {
       }
     });
 
-    return reply.status(201).send();
+    return reply.status(201).send({
+      meal,
+    });
   });
 }
