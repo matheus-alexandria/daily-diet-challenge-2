@@ -92,10 +92,28 @@ export async function mealRoutes(app: FastifyInstance) {
         schedule,
         on_diet: onDiet,
       }
-    });// 47b37c20-da65-478f-bd31-648f97830aac
+    });
 
     return {
       meal: updatedMeal,
     }
+  });
+
+  app.delete('/:id', {
+    preHandler: [checkSessionId]
+  }, async (request, reply) => {
+    const routeParamsSchema = z.object({
+      id: z.string().uuid(),
+    });
+
+    const { id } = routeParamsSchema.parse(request.params);
+
+    await prisma.meal.delete({
+      where: {
+        id,
+      }
+    });
+
+    return reply.status(204).send();
   });
 }
