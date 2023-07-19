@@ -4,26 +4,27 @@ import { prisma } from "../../lib/prisma";
 import { checkSessionId } from "../../middlewares/checkSessionId";
 
 export async function mealRoutes(app: FastifyInstance) {
-  app.post('/:id', {
+  app.post('/:userId', {
     preHandler: [checkSessionId],
   }, async (request, reply) => {
     const requestParamsSchema = z.object({
-      id: z.string().uuid()
+      userId: z.string().uuid()
     });
 
     const requestBodySchema = z.object({
       name: z.string(),
       description: z.string().optional(),
+      schedule: z.coerce.date(),
       onDiet: z.boolean(),
     });
 
-    const { id } = requestParamsSchema.parse(request.params);
+    const { userId } = requestParamsSchema.parse(request.params);
 
-    const { name, description, onDiet } = requestBodySchema.parse(request.body);
+    const { name, description, schedule, onDiet } = requestBodySchema.parse(request.body);
 
     const user = prisma.user.findFirst({
       where: {
-        id,
+        id: userId,
       }
     });
 
@@ -36,8 +37,8 @@ export async function mealRoutes(app: FastifyInstance) {
         name,
         description,
         on_diet: onDiet,
-        schedule: new Date(),
-        user_id: id
+        schedule,
+        user_id: userId
       }
     });
 
