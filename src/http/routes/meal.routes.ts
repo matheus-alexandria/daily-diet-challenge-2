@@ -4,6 +4,26 @@ import { prisma } from "../../lib/prisma";
 import { checkSessionId } from "../../middlewares/checkSessionId";
 
 export async function mealRoutes(app: FastifyInstance) {
+  app.get('/:userId', {
+    preHandler: [checkSessionId]
+  }, async (request, reply) => {
+    const requestParamsSchema = z.object({
+      userId: z.string().uuid()
+    });
+
+    const { userId } = requestParamsSchema.parse(request.params);
+
+    const meals = await prisma.meal.findMany({
+      where: {
+        user_id: userId
+      }
+    });
+
+    return {
+      meals: meals ?? []
+    }
+  });
+
   app.post('/:userId', {
     preHandler: [checkSessionId],
   }, async (request, reply) => {

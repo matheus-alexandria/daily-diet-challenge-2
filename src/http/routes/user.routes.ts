@@ -57,6 +57,7 @@ export async function userRoutes(app: FastifyInstance) {
     });
 
     return reply.send({
+      user,
       cookie,
     });
   });
