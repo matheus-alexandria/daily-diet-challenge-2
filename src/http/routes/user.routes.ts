@@ -98,7 +98,9 @@ export async function userRoutes(app: FastifyInstance) {
       }
     });
 
-    return reply.send(meals);
+    return reply.send({
+      meals,
+    });
   });
 
   app.get('/:userId/meals/streak', {
@@ -125,9 +127,25 @@ export async function userRoutes(app: FastifyInstance) {
     const meals = await prisma.meal.findMany({
       where: {
         user_id: userId,
+      },
+      orderBy: {
+        schedule: "asc",
       }
     });
 
-    return reply.send(meals);
+    let streak = 0;
+
+    meals.reduce((acc, cur) => {
+      if (cur.on_diet) {
+        streak = Math.max(acc + 1, streak);
+        return acc + 1;
+      };
+
+      return 0;
+    }, 0);
+
+    return reply.send({
+      streak,
+    });
   });
 }
