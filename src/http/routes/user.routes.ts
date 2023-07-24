@@ -84,12 +84,12 @@ export async function userRoutes(app: FastifyInstance) {
     }
 
     const requestQuerySchema = z.object({
-      onDiet: z.string(),
+      onDiet: z.string().transform((val) => {
+        return val === '' ? undefined : Number(val)
+      }),
     });
 
-    const query = requestQuerySchema.parse(request.query);
-
-    const onDiet = query.onDiet.length > 0 ? Number(query.onDiet) : undefined;
+    const { onDiet } = requestQuerySchema.parse(request.query);
 
     const meals = await prisma.meal.findMany({
       where: {
