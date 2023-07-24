@@ -3,8 +3,6 @@ import { z } from "zod";
 import { prisma } from "../../lib/prisma";
 import { randomUUID } from "crypto";
 import { checkSessionId } from "../../middlewares/checkSessionId";
-import { User } from "@prisma/client";
-import { urlToHttpOptions } from "url";
 
 export async function userRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
@@ -86,14 +84,19 @@ export async function userRoutes(app: FastifyInstance) {
     }
 
     const requestQuerySchema = z.object({
-      onDiet: z.boolean().or(z.undefined()),
+      onDiet: z.string(),
     });
 
     const query = requestQuerySchema.parse(request.query);
 
-    console.log(query);
+    const onDiet = query.onDiet.length > 0 ? Number(query.onDiet) : undefined;
 
-    const meals = await prisma.meal.findMany();
+    const meals = await prisma.meal.findMany({
+      where: {
+        user_id: userId,
+        on_diet: onDiet,
+      }
+    });
 
     return reply.send(meals);
   });

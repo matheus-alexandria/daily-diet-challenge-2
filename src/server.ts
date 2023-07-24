@@ -19,7 +19,7 @@ app.setErrorHandler((error, _, reply) => {
   }
 
   reply.status(500).send({
-    error: 'Unknown error.'
+    error: error.message,
   })
 });
 

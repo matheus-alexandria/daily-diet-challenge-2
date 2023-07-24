@@ -59,7 +59,7 @@ export async function mealRoutes(app: FastifyInstance) {
       name: z.string(),
       description: z.string().optional(),
       schedule: z.coerce.date(),
-      onDiet: z.boolean(),
+      onDiet: z.coerce.number(),
     });
 
     const { userId } = requestParamsSchema.parse(request.params);
@@ -98,7 +98,7 @@ export async function mealRoutes(app: FastifyInstance) {
       name: z.string().optional(),
       description: z.string().optional(),
       schedule: z.coerce.date().optional(),
-      onDiet: z.boolean().optional(),
+      onDiet: z.coerce.number().optional(),
     });
 
     const routeParamsSchema = z.object({
