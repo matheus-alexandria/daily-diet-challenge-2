@@ -4,9 +4,33 @@ import { prisma } from "../../lib/prisma";
 import { checkSessionId } from "../../middlewares/checkSessionId";
 
 export async function mealRoutes(app: FastifyInstance) {
+  app.get(':mealId', async (request, reply) => {
+    const requestParamsSchema = z.object({
+      mealId: z.string().uuid()
+    });
+
+    const { mealId } = requestParamsSchema.parse(request.params);
+
+    const meal = await prisma.meal.findFirst({
+      where: {
+        id: mealId
+      }
+    });
+
+    if (!meal) {
+      return reply.status(404).send({
+        error: 'Content not found',
+      });
+    }
+
+    return {
+      meal,
+    }
+  });
+
   app.get('/:userId', {
     preHandler: [checkSessionId]
-  }, async (request, reply) => {
+  }, async (request, _) => {
     const requestParamsSchema = z.object({
       userId: z.string().uuid()
     });
