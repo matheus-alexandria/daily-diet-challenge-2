@@ -62,7 +62,7 @@ export async function userRoutes(app: FastifyInstance) {
     });
   });
 
-  app.get('/meals/:userId', {
+  app.get('/:userId/meals', {
     preHandler: [checkSessionId],
   }, async (request, reply) => {
     const requestParamsSchema = z.object({
@@ -95,6 +95,36 @@ export async function userRoutes(app: FastifyInstance) {
       where: {
         user_id: userId,
         on_diet: onDiet,
+      }
+    });
+
+    return reply.send(meals);
+  });
+
+  app.get('/:userId/meals/streak', {
+    preHandler: [checkSessionId],
+  }, async (request, reply) => {
+    const requestParamsSchema = z.object({
+      userId: z.string().uuid()
+    });
+
+    const { userId } = requestParamsSchema.parse(request.params);
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: userId
+      }
+    });
+
+    if (!user) {
+      return reply.status(404).send({
+        error: 'User not found'
+      });
+    }
+
+    const meals = await prisma.meal.findMany({
+      where: {
+        user_id: userId,
       }
     });
 
